@@ -10,21 +10,15 @@ import { fileURLToPath } from "url";
 
 dotenv.config();
 const app = express();
-const allowedOrigins = [
-  "http://localhost:5173",   // local frontend
-  "https://your-new-vercel-app.vercel.app"  // your new project frontend
-];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("CORS not allowed"));
-    }
-  },
+  origin: [
+    "http://localhost:5173",
+    "https://spoken-english-qaxnwyizo-sarveshs-projects-23626ae2.vercel.app"
+  ],
   credentials: true
 }));
+
 app.use(express.json());
 
 // static folder to serve uploaded files
