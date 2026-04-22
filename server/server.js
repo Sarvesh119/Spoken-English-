@@ -10,7 +10,21 @@ import { fileURLToPath } from "url";
 
 dotenv.config();
 const app = express();
-app.use(cors());
+const allowedOrigins = [
+  "http://localhost:5173",   // local frontend
+  "https://your-new-vercel-app.vercel.app"  // your new project frontend
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed"));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json());
 
 // static folder to serve uploaded files
@@ -25,6 +39,6 @@ app.use("/api/recordings", recordingRoutes);
 const PORT = process.env.PORT || 5000;
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    app.listen(PORT, ()=> console.log(`MongoDB Connect sucessfully \nServer running on port ${PORT}`));
+    app.listen(PORT, () => console.log(`MongoDB Connect sucessfully \nServer running on port ${PORT}`));
   })
   .catch(err => console.error("MongoDB connection error:", err));
