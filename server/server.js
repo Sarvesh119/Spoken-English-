@@ -12,7 +12,7 @@ dotenv.config();
 
 const app = express();
 
-// ✅ CORS FIX (handles Vercel + local properly)
+// ✅ CORS (handles Vercel + local)
 const allowedOrigins = [
   "http://localhost:5173",
   "https://spoken-english-qaxnwyizo-sarveshs-projects-23626ae2.vercel.app"
@@ -20,7 +20,6 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // allow requests with no origin (mobile apps, postman)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -33,10 +32,10 @@ app.use(cors({
 // ✅ Middleware
 app.use(express.json());
 
-// ✅ Fix preflight (important for POST requests)
+// ✅ Fix preflight requests
 app.options("*", cors());
 
-// ✅ Static folder for uploads
+// ✅ Static uploads
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -46,12 +45,12 @@ app.use("/api/auth", authRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/recordings", recordingRoutes);
 
-// ✅ Health check route (very useful for testing)
+// ✅ Health route
 app.get("/", (req, res) => {
   res.send("Spoken English API is running 🚀");
 });
 
-// ✅ Database + Server
+// ✅ MongoDB + Server
 const PORT = process.env.PORT || 5000;
 
 mongoose
@@ -62,6 +61,4 @@ mongoose
       console.log(`Server running on port ${PORT}`)
     );
   })
-  .catch((err) => {
-    console.error("MongoDB connection error:", err);
-  });
+  .catch((err) => console.error("MongoDB connection error:", err));
