@@ -15,7 +15,7 @@ const app = express();
 // ✅ CORS (handles Vercel + local)
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://spoken-english-qaxnwyizo-sarveshs-projects-23626ae2.vercel.app"
+  "https://spoken-english-rho.vercel.app"
 ];
 
 app.use(cors({
