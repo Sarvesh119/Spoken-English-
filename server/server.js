@@ -13,11 +13,14 @@ const app = express();
 
 import cors from "cors";
 
+
 app.use(cors({
-  origin: "*",   // ✅ allow all origins
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+app.options("*", cors());
 
 // ✅ Middleware
 app.use(express.json());
