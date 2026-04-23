@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import LessonPractice from "./LessonPractice";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+// ✅ ONLY env (no fallback)
+const API = import.meta.env.VITE_API_URL;
 
 export default function App() {
   const [lessons, setLessons] = useState([]);
@@ -12,7 +13,7 @@ export default function App() {
     axios
       .get(`${API}/lessons`)
       .then((r) => setLessons(r.data))
-      .catch(() => {});
+      .catch((err) => console.error(err));
   }, []);
 
   return (
