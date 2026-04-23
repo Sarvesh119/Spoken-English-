@@ -1,7 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import cors from "cors";
 import authRoutes from "./routes/auth.js";
 import lessonRoutes from "./routes/lessons.js";
 import recordingRoutes from "./routes/recordings.js";
@@ -12,16 +11,20 @@ dotenv.config();
 
 const app = express();
 
+import cors from "cors";
+
 app.use(cors({
-  origin: true,   // ✅ allow all origins dynamically
-  credentials: true
+  origin: "*",   // ✅ allow all origins
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 // ✅ Middleware
 app.use(express.json());
 
-// ✅ Fix preflight requests
-app.options("*", cors());
+app.options("*", cors({
+  origin: "*"
+}));
 
 // ✅ Static uploads
 const __filename = fileURLToPath(import.meta.url);
