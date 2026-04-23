@@ -11,21 +11,10 @@ import { fileURLToPath } from "url";
 dotenv.config();
 
 const app = express();
-
-// ✅ CORS (handles Vercel + local)
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://spoken-english-rho.vercel.app"
-];
+import cors from "cors";
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("CORS not allowed"));
-    }
-  },
+  origin: true,   // ✅ allow all origins dynamically
   credentials: true
 }));
 
