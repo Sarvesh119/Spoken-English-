@@ -13,21 +13,18 @@ const app = express();
 
 import cors from "cors";
 
-
+// ✅ APPLY THIS BEFORE EVERYTHING
 app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  origin: "*"
 }));
 
+// ✅ HANDLE PREFLIGHT
 app.options("*", cors());
+
+
 
 // ✅ Middleware
 app.use(express.json());
-
-app.options("*", cors({
-  origin: "*"
-}));
 
 // ✅ Static uploads
 const __filename = fileURLToPath(import.meta.url);
