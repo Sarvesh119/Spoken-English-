@@ -16,7 +16,7 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://spoken-english-khaki.vercel.app"
+    "https://spoken-english-six.vercel.app/"
   ],
   credentials: true
 }));
