@@ -6,18 +6,36 @@ import LessonPractice from "./LessonPractice";
 // ✅ Axios instance with retry + Render handling
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  timeout: 15000,  // 15s for cold starts
+  timeout: 15000,
 });
+
+// ✅ Retry limit
+const MAX_RETRIES = 3;
 
 api.interceptors.response.use(
   (res) => res,
-  (error) => {
-    if (error.code === "ERR_NETWORK" || error.message.includes("Network Error")) {
-      toast.error("Backend waking up... retrying in 5s", { duration: 3000 });
-      return new Promise((resolve) => {
-        setTimeout(() => resolve(api(error.config)), 5000);  // Auto-retry
-      });
+  async (error) => {
+    const config = error.config;
+
+    // initialize retry count
+    config.__retryCount = config.__retryCount || 0;
+
+    if (
+      (error.code === "ERR_NETWORK" || error.message.includes("Network Error")) &&
+      config.__retryCount < MAX_RETRIES
+    ) {
+      config.__retryCount += 1;
+
+      toast.loading(
+        `Backend waking up... retry ${config.__retryCount}/${MAX_RETRIES}`,
+        { duration: 2000 }
+      );
+
+      await new Promise((res) => setTimeout(res, 5000));
+
+      return api(config);
     }
+
     return Promise.reject(error);
   }
 );
@@ -34,15 +52,16 @@ export default function App() {
       setError(null);
       const { data } = await api.get("/lessons");
       setLessons(data);
+      toast.dismiss();
       toast.success("Lessons loaded!");
     } catch (err) {
       console.error(err);
-      setError("Failed to load lessons. Backend may be sleeping—visit https://spoken-english-60qt.onrender.com/ to wake it.");
-      toast.error("Load failed—check console");
+      setError("⏳ Server is starting... please wait 10–20 seconds and retry.");
+      toast.error("Server waking up, please wait...");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [api]);
 
   useEffect(() => {
     fetchLessons();
@@ -84,8 +103,8 @@ export default function App() {
 
         <div className="lesson-content">
           {selected ? (
-            <LessonPractice 
-              lesson={selected} 
+            <LessonPractice
+              lesson={selected}
               onCompleted={() => toast.success("Lesson completed! 🎉")}
             />
           ) : !loading && lessons.length === 0 ? (
