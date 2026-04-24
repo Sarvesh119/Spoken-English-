@@ -12,12 +12,10 @@ dotenv.config();
 
 const app = express();
 
+
 // ✅ CORS
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://spoken-english-six.vercel.app/"
-  ],
+  origin: true,
   credentials: true
 }));
 
